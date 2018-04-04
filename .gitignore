@@ -1,0 +1,12 @@
+build/*
+
+docs/*
+!docs/*.sh
+!docs/.config
+
+src/cmake.h
+
+workspace/*
+!workspace/*.sh
+
+!.keep
