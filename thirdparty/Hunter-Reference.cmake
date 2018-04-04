@@ -1,17 +1,25 @@
+# © 2017 Joseph Cameron - All Rights Reserved
+# Project: Hello Travis CI
+# Created on 2017-12-7.
+#${CURL_LIBRARIES}
+
 find_path(HUNTER-REFERENCE_INCLUDE_DIR ...)
 
-if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${FOO_INCLUDE_DIR}))
+if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${HUNTER-REFERENCE_INCLUDE_DIR}))
+    message(STATUS "Initializing dependency \"Hunter-Reference\"")
+
     execute_process(
-        COMMAND git submodule update --init -- thirdparty/Hunter-Reference
+        COMMAND git submodule update --init -- Hunter-Reference
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
+    set(HUNTER-REFERENCE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Hunter-Reference/include"
+        CACHE PATH "hunter-reference include directory" FORCE
+    )
 
 else()
-
-
+    message(STATUS "dependency \"Hunter-Reference\" already initialized. Skipping")
 endif()
-
 
 #[[# step 0
 find_path(FOO_INCLUDE_DIR ...)
