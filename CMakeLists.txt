@@ -5,6 +5,13 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 enable_testing()
 
+include("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/ruslo/hunter/archive/v0.20.31.tar.gz"
+    SHA1 "65c8f2292566aedb2fe10e08e09c74dda8e5d07a"
+)
+project("") #Required for Hunter
+
 set(JFC_CXX_COMPILER_FEATURE_REQUIREMENTS PRIVATE
     cxx_variadic_templates
     cxx_nullptr
