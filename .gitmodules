@@ -1,0 +1,3 @@
+[submodule "thirdparty/Hunter-Reference"]
+	path = thirdparty/Hunter-Reference
+	url = https://github.com/jfcameron/Hunter-Reference.git

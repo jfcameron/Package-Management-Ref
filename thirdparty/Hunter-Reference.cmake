@@ -1,95 +1,46 @@
-#[[## Building the TBB examples is optional. set this to TRUE if you
-## want to build the examples
-set(BUILD_TBB_EXAMPLES FALSE)
-set(TBB_PREFIX tbb44)
-set(TBB_URL ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/tbb44_20160316oss_src.tgz)
-set(TBB_URL_MD5 1908b8901730fa1049f0c45d8d0e6d7d)
+find_path(HUNTER-REFERENCE_INCLUDE_DIR ...)
 
-if (WIN32)
-	set(TBB_MAKE gmake) ## you can set the full path to the file here
-else (WIN32)
-	set(TBB_MAKE make)
-endif (WIN32)
+if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${FOO_INCLUDE_DIR}))
+    execute_process(
+        COMMAND git submodule update --init -- thirdparty/Hunter-Reference
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
 
-# set the number of CPUs used for compiling to 8 or 4 or as many as you
-# have in your system.
-set(NCPU 8)
 
-# add instructions to build the TBB source
-if (BUILD_TBB_EXAMPLES)
-	set(TBB_EXAMPLES_STEP ${TBB_PREFIX}_examples
-endif (BUILD_TBB_EXAMPLES)
-ExternalProject_Add(${TBB_PREFIX}
-	PREFIX ${TBB_PREFIX}
-	URL ${TBB_URL}
-	URL_MD5 ${TBB_URL_MD5}
-	CONFIGURE_COMMAND ""
-	BUILD_COMMAND  ${TBB_MAKE} -j${NCPU} tbb_build_prefix=${TBB_PREFIX}
-	BUILD_IN_SOURCE 1
-	INSTALL_COMMAND ""
-	LOG_DOWNLOAD 1
-	LOG_BUILD 1
-	STEP_TARGETS ${TBB_PREFIX}_info ${TBB_EXAMPLES_STEP}
-)
+else()
 
-# get the unpacked source directory path
-ExternalProject_Get_Property(${TBB_PREFIX} SOURCE_DIR)
-message(STATUS "Source directory of ${TBB_PREFIX} ${SOURCE_DIR}")
-# build another dependency
-ExternalProject_Add_Step(${TBB_PREFIX} ${TBB_PREFIX}_info
-	COMMAND ${TBB_MAKE} info tbb_build_prefix=${TBB_PREFIX}
-	DEPENDEES build
-	WORKING_DIRECTORY ${SOURCE_DIR}
-	LOG 1
-) 
-        
-# build the examples if you're interested
-if (BUILD_TBB_EXAMPLES)
-	ExternalProject_Add_Step(${TBB_PREFIX} ${TBB_PREFIX}_examples
-	  COMMAND make -j${NCPU} examples tbb_build_prefix=${TBB_PREFIX}
-	  DEPENDEES build
-	  WORKING_DIRECTORY ${SOURCE_DIR}
-	  LOG 1
-	)
-endif (BUILD_TBB_EXAMPLES)
-# Set separate directories for building in Debug or Release mode
-set(TBB_DEBUG_DIR ${SOURCE_DIR}/build/${TBB_PREFIX}_debug)
-set(TBB_RELEASE_DIR ${SOURCE_DIR}/build/${TBB_PREFIX}_release)
-message(STATUS "TBB Debug directory ${TBB_DEBUG_DIR}")
-message(STATUS "TBB Release directory ${TBB_RELEASE_DIR}")
 
-# set the include directory variable and include it
-set(TBB_INCLUDE_DIRS ${SOURCE_DIR}/include)
-include_directories(${TBB_INCLUDE_DIRS})
+endif()
 
-# link the correct TBB directory when the project is in Debug or Release mode
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	# in Debug mode
-	link_directories(${TBB_RELEASE_DIR})
-	set(TBB_LIBS tbb_debug tbbmalloc_debug)
-	set(TBB_LIBRARY_DIRS ${TBB_DEBUG_DIR})
-else (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	# in Release mode
-	link_directories(${TBB_RELEASE_DIR})
-	set(TBB_LIBS tbb tbbmalloc)
-	set(TBB_LIBRARY_DIRS ${TBB_RELEASE_DIR})
-endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-# verify that the TBB header files can be included
-set(CMAKE_REQUIRED_INCLUDES_SAVE ${CMAKE_REQUIRED_INCLUDES})
-set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} 	${TBB_INCLUDE_DIRS})
-check_include_file_cxx("tbb/tbb.h" HAVE_TBB)
-set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES_SAVE})
- if (NOT HAVE_TBB)
-	message(STATUS "Did not build TBB correctly as cannot find tbb.h. Will build it.")
-	set(HAVE_TBB 1)
-endif (NOT HAVE_TBB)
-        
-# Optional: install the TBB libraries when the application being built gets installed
-# when you run "make install"
-if (UNIX)
-	install(DIRECTORY ${TBB_LIBRARY_DIRS}/ DESTINATION lib
-     	USE_SOURCE_PERMISSIONS FILES_MATCHING PATTERN "*.so*")
-else (UNIX)
-	## Similarly for Windows.
-endif (UNIX)]]
+#[[# step 0
+find_path(FOO_INCLUDE_DIR ...)
+
+if((NOT FOO_INCLUDE_DIR) OR (NOT EXISTS ${FOO_INCLUDE_DIR})
+    # we couldn't find the header files for FOO or they don't exist
+    message("Unable to find foo")
+
+    # we have a submodule setup for foo, assume it is under external/foo
+    # now we need to clone this submodule
+    execute_process(COMMAND git submodule update --init -- external/foo
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # set FOO_INCLUDE_DIR properly
+    set(FOO_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/foo/path/to/include
+        CACHE PATH "foo include directory")
+
+    # also install it
+    install(DIRECTORY ${FOO_INCLUDE_DIR}/foo DESTINATION ${some_dest})
+
+    # for convenience setup a target
+    add_library(foo INTERFACE)
+    target_include_directories(foo INTERFACE
+                               $<BUILD_INTERFACE:${FOO_INCLUDE_DIR}>
+                               $<INSTALL_INTERFACE:${some_dest}>)
+
+    # need to export target as well
+    install(TARGETS foo EXPORT my_export_set DESTINATION ${some_dest})
+else()
+    # see above, setup target as well
+endif()
+]]

@@ -1,4 +1,10 @@
-#include <GLFW/glfw3.h>
+int main()
+{
+    return 0;
+}
+
+
+/*#include <GLFW/glfw3.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -72,3 +78,4 @@ int main(void)
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
+*/

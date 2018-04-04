@@ -6,13 +6,13 @@ project("Hunter-Usage-Reference" VERSION "0.0.1" DESCRIPTION "has no description
 #hunter_add_package(glfw)
 #find_package(glfw3 CONFIG REQUIRED)
 add_executable(${PROJECT_NAME}
-    ${PROJECT_SOURCE_DIR}/src/main.cpp
+    ${PROJECT_SOURCE_DIR}/main.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
     #${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME} 
-    glfw
+#    glfw
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build
