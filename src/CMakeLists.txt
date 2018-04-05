@@ -3,17 +3,15 @@
 # Created on 2017-12-7.
 
 project("Hunter-Usage-Reference" VERSION "0.0.1" DESCRIPTION "has no description!")
-#hunter_add_package(glfw)
 find_package(glfw3 CONFIG REQUIRED)
-#find_package(hunter-reference CONFIG REQUIRED)
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${HUNTER-REFERENCE_INCLUDE_DIR}
+    ${Hunter-Reference_INCLUDE_DIR}
 )
 target_link_libraries(${PROJECT_NAME}
-    ${HUNTER-REFERENCE_LIBRARIES}
+    ${Hunter-Reference_LIBRARIES}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build

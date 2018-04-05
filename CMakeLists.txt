@@ -35,3 +35,10 @@ execute_process(COMMAND git rev-parse HEAD WORKING_DIRECTORY ${PROJECT_SOURCE_DI
 execute_process(COMMAND git log -1 --format=%cd --date=local HEAD WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE JFC_GIT_COMMIT_DATE OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 configure_file(${CMAKE_SOURCE_DIR}/src/cmake.h.in ${CMAKE_SOURCE_DIR}/src/cmake.h @ONLY)
+
+# ====
+#[[get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()]]

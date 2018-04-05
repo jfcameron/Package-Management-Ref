@@ -2,6 +2,30 @@
 # Project: Hello Travis CI
 # Created on 2017-12-7.
 
+function(jfc_add_cmake_dependency ...)
+
+endfunction()
+
+######### NEW METHOD : PROVIDE OVERRIDABLE SOLUTION USING FIND_PACKAGE
+
+if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${HUNTER-REFERENCE_INCLUDE_DIR}))
+    message(STATUS "Initializing dependency \"Hunter-Reference\"")
+    
+    set(hunter-reference_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Hunter-Reference 
+        CACHE PATH "location of hunter-reference Config file" FORCE)
+
+    execute_process(COMMAND git submodule update --init -- thirdparty/Hunter-Reference
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Hunter-Reference")
+else()
+    message(STATUS "dependency \"Hunter-Reference\" already initialized. Skipping")
+endif()
+
+find_package(hunter-reference)
+
+#[[ ######### OLD METHOD : PUTS ONUS ON USER TO SET CORRECT PATHS ##############
+
 find_path(HUNTER-REFERENCE_INCLUDE_DIR ...)
 
 if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${HUNTER-REFERENCE_INCLUDE_DIR}))
@@ -23,4 +47,4 @@ if((NOT HUNTER-REFERENCE_INCLUDE_DIR) OR (NOT EXISTS ${HUNTER-REFERENCE_INCLUDE_
     add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Hunter-Reference")
 else()
     message(STATUS "dependency \"Hunter-Reference\" already initialized. Skipping")
-endif()
+endif() ]]

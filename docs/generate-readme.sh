@@ -15,7 +15,9 @@ PREVIEW_IMAGE_LIST=(
 
 README=$(cat << README
 ## Description
-Example executable project that depends on a personal library for implementation and hunter to resolve that lib\'s thirdparty dependencies.
+Demo of package management in C++, using two separate strategies: Hunter for hunter supported libraries and Cmake + Git for others.
+A crossplatform project that creates a window and draws a 2d demo on it. Implementation depends on a personal library (abstraction on glfw). This in turn depends on a number of third party libraries (glfw, glew, platform specific libs).
+hunter takes care of GLFW and its platform specific requirements. CMake/Git take care of my personal example library.
 
 ### Required Tools
 * bash
