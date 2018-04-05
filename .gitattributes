@@ -5,4 +5,4 @@
 #linguist-generated
 #linguist-detectable
 
-cmake/HunterGake.cmake linguist-thirdparty
+cmake/HunterGake.cmake linguist-vendored
