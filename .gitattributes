@@ -5,4 +5,4 @@
 #linguist-generated
 #linguist-detectable
 
-#cmake/HunterGate.cmake linguist-vendored=true
+cmake/HunterGate.cmake linguist-vendored=true
