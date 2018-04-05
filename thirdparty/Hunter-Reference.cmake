@@ -1,7 +1,6 @@
 # © 2017 Joseph Cameron - All Rights Reserved
 # Project: Hello Travis CI
 # Created on 2017-12-7.
-#${CURL_LIBRARIES}
 
 find_path(HUNTER-REFERENCE_INCLUDE_DIR ...)
 
