@@ -1,0 +1,8 @@
+#linguist-documentation
+#linguist-language
+#linguist-vendored
+#linguist-thirdparty
+#linguist-generated
+#linguist-detectable
+
+cmake/HunterGake.cmake linguist-thirdparty
