@@ -1,10 +1,8 @@
-#include <Hunter-Reference/object.h>
+#include <Hunter-Reference/DemoGLWindow.h>
 
 int main(void)
 {
-    hunterreference::object myobject;
+    gfx::DemoGLWindow window;
 
-    myobject.getSecret();
-
-    myobject.runGraphicsTest();
+    while (!window.shouldClose()) window.update();
 }
