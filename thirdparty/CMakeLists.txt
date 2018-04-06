@@ -3,14 +3,13 @@
 # Created on 2017-12-7.
 
 #[[!
-    Loads the cmake package with the given name.
-    Assumptions: 
+    Loads the cmake package with the given name find_package, if fail: use submodule
+    Submodule assumptions: 
         - the dependency is a submodule in the current directory named $JFC_DEPENDENCY_NAME
         - the dependency's project name is the same as its repo name ($JFC_DEPENDENCY_NAME)
-        - the dependency's *Config.cmake/*-config.cmake file is at the root of the submodule
 ]]
-function(jfc_add_cmake_dependency JFC_DEPENDENCY_NAME)
-    #find_package(${JFC_DEPENDENCY_NAME})
+function(jfc_dependency JFC_DEPENDENCY_NAME JFC_PATH_TO_DEPENDENCY_ROOT_CMAKELIST JFC_PATH_TO_INCLUDE_DIRECTORY JFC_DEPENDENCY_LIBRARIES)
+    find_package(${JFC_DEPENDENCY_NAME} QUIET)
 
     if((NOT ${JFC_DEPENDENCY_NAME}_INCLUDE_DIR) OR (NOT EXISTS ${${JFC_DEPENDENCY_NAME}_INCLUDE_DIR}))
         message(STATUS "[Library loader] Initializing dependency \"${JFC_DEPENDENCY_NAME}\"")
@@ -18,17 +17,24 @@ function(jfc_add_cmake_dependency JFC_DEPENDENCY_NAME)
         execute_process(COMMAND git submodule update --init -- ${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}
                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
         
-        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}")
-    
-        set(${JFC_DEPENDENCY_NAME}_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME} 
-            CACHE PATH "location of ${JFC_DEPENDENCY_NAME} Config file" FORCE)
+        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}/${JFC_PATH_TO_DEPENDENCY_ROOT_CMAKELIST}")
+
+        # Should be user defined behaviour
+        set(Hunter-Reference_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/${JFC_DEPENDENCY_NAME}/${JFC_PATH_TO_INCLUDE_DIRECTORY}
+            CACHE PATH "Hunter-Reference include directory" FORCE)
+
+        set(Hunter-Reference_LIBRARIES ${CMAKE_CURRENT_LIST_DIR}/${JFC_DEPENDENCY_NAME}/${JFC_DEPENDENCY_LIBRARIES}
+            CACHE PATH "Hunter-Reference output libraries" FORCE)
+        # End beh
     else()
         message(STATUS "[Library loader] dependency \"${JFC_DEPENDENCY_NAME}\" already initialized. Skipping")
     endif()
-
-    find_package(${JFC_DEPENDENCY_NAME} REQUIRED)
 endfunction()
 
 # ==================================  Dependency list ================================== 
 
-jfc_add_cmake_dependency("Hunter-Reference")
+jfc_dependency("Hunter-Reference" "." "include" "build/libHunter-Reference.a;glfw")
+
+#find_package("curl" REQUIRED)
+#-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl \
+#-DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib \
