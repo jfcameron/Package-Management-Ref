@@ -3,21 +3,19 @@
 # Created on 2017-12-7.
 
 #[[!
-    Loads the cmake package with the given name find_package, if fail: use submodule.
-    Note: The submodule MUST be buildable via cmake.
+    Loads a library project from jfcameron github account.
+    Requires the project follows my personal layout.
 ]]
-function(jfc_find_package_with_submodule_to_cmake_project_fallback JFC_DEPENDENCY_NAME JFC_PATH_TO_DEPENDENCY_ROOT_CMAKELIST JFC_PATH_TO_INCLUDE_DIRECTORY JFC_DEPENDENCY_LIBRARIES)
-    find_package(${JFC_DEPENDENCY_NAME} QUIET)
-
+function(jfc_load_personal_dependency JFC_DEPENDENCY_NAME JFC_DEPENDENCY_LIBRARIES)
     if((NOT ${JFC_DEPENDENCY_NAME}_INCLUDE_DIR) OR (NOT EXISTS ${${JFC_DEPENDENCY_NAME}_INCLUDE_DIR}))
         message(STATUS "[Library loader] Package \"${JFC_DEPENDENCY_NAME}\" could not be found on the system. Initializing dependency from a submodule.")
 
         execute_process(COMMAND git submodule update --init -- ${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}
                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
         
-        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}/${JFC_PATH_TO_DEPENDENCY_ROOT_CMAKELIST}")
+        add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${JFC_DEPENDENCY_NAME}/")
 
-        set(${JFC_DEPENDENCY_NAME}_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/${JFC_DEPENDENCY_NAME}/${JFC_PATH_TO_INCLUDE_DIRECTORY}
+        set(${JFC_DEPENDENCY_NAME}_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/${JFC_DEPENDENCY_NAME}/include
             CACHE PATH "${JFC_DEPENDENCY_NAME} include directory" FORCE)
 
         set(${JFC_DEPENDENCY_NAME}_LIBRARIES ${JFC_DEPENDENCY_LIBRARIES}
@@ -27,8 +25,7 @@ function(jfc_find_package_with_submodule_to_cmake_project_fallback JFC_DEPENDENC
     endif()
 endfunction()
 
-jfc_find_package_with_submodule_to_cmake_project_fallback("Hunter-Reference" 
-    "." "include" 
+jfc_load_personal_dependency("Hunter-Reference"
     "${CMAKE_CURRENT_LIST_DIR}/Hunter-Reference/build/libHunter-Reference.a;glfw"
 )
 
