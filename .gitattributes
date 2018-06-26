@@ -1,7 +1,3 @@
-#linguist-documentation
-#linguist-language
-#linguist-vendored
-#linguist-generated
-#linguist-detectable
+* text=auto
 
 cmake/HunterGate.cmake linguist-vendored=true
